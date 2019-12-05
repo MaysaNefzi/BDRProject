@@ -18,7 +18,7 @@ public class Request extends javax.swing.JFrame {
     ConnectionClass Cnx= new ConnectionClass();
     ResultSet res;
     int nblines;
-    public void UpdateRequest(){
+   /* public void UpdateRequest(){ 
         try{
             stm=Cnx.ObtenirCnx().createStatement();
             String req= txt_req.getText();
@@ -30,19 +30,42 @@ public class Request extends javax.swing.JFrame {
                     + "Your error is: "+e);
         
         }
-    }
-    public void SelectRequest(){
+    }*/
+    public void Request(){
         try{
             stm=Cnx.ObtenirCnx().createStatement();
             String req= txt_req.getText();
-            res=stm.executeQuery(req);
+            req.replaceAll("\\s+ ", "");
+            if( req.substring(0).equals('s')) 
+            {
+                String reqU=req.toUpperCase();
+            int from =reqU.indexOf("from");
+            int at=req.indexOf("@");
+            String table=req.substring(from++, at--);
+            String site=req.substring(at++, req.length());
+            String req1="select * from"+table+"where site="+site;
+            res=stm.executeQuery(req); 
             System.out.println("Request Executed Successfully");
             DefaultTableModel TM =(DefaultTableModel)table_student.getModel();
             TM.setRowCount(0); 
             while(res.next()){
+               
                 Object O[]={res.getInt("idStudent"),res.getString("Name"),res.getString("FirstName"),res.getDate("Birthday"),res.getInt("Grade"),res.getDouble("Avg")};
                 TM.addRow(O);
-            }
+            }}
+            else{
+                try{
+                     nblines=stm.executeUpdate(req);
+            JOptionPane.showMessageDialog(null,"Request Executed Successfully");
+                  }
+                 catch(SQLException e){
+                        JOptionPane.showMessageDialog(null, "Request Failed!"
+                            + "Your error is: "+e);
+        
+        }
+                }
+                
+            
         }
         catch(SQLException e){
             JOptionPane.showMessageDialog(null, "Request Failed!"
@@ -66,30 +89,17 @@ public class Request extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btn_execute = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txt_req = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_student = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txt_req = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btn_execute.setText("Execute Update");
-        btn_execute.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_executeActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         jLabel1.setText("Type a request");
-
-        txt_req.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_reqActionPerformed(evt);
-            }
-        });
 
         table_student.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -107,12 +117,16 @@ public class Request extends javax.swing.JFrame {
             table_student.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        jButton1.setText("Execute Selection");
+        jButton1.setText("Execute request");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        txt_req.setColumns(20);
+        txt_req.setRows(5);
+        jScrollPane2.setViewportView(txt_req);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -120,50 +134,42 @@ public class Request extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_req, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(0, 68, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_execute, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(106, 106, 106))
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(238, 238, 238))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(jLabel1)
-                .addGap(31, 31, 31)
-                .addComponent(txt_req, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jButton1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(btn_execute))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(77, 77, 77))
         );
 
+        jButton1.getAccessibleContext().setAccessibleName("Execute request");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_executeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_executeActionPerformed
-        UpdateRequest();
-    }//GEN-LAST:event_btn_executeActionPerformed
-
-    private void txt_reqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_reqActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_reqActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        SelectRequest();
+        Request();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -203,11 +209,11 @@ public class Request extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_execute;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable table_student;
-    private javax.swing.JTextField txt_req;
+    private javax.swing.JTextArea txt_req;
     // End of variables declaration//GEN-END:variables
 }
